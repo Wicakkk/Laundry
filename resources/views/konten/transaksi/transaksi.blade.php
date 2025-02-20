@@ -11,6 +11,7 @@
             <div class="col-auto flex-grow-1 overflow-auto">
                 <div class="btn-group position-static"></div>
             </div>
+            @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
             <div class="col-auto">
                 <div class="d-flex align-items-center gap-2 justify-content-lg-end">
                     <a href="{{ route('transaksi.create') }}" class="btn btn-primary px-4">
@@ -18,6 +19,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
 
         <div class="d-flex gap-2 mt-3">
@@ -46,8 +48,10 @@
                                 <th>Deadline</th>
                                 <th>Status</th>
                                 <th>Payment</th>
-                                <th>Total Harga</th> <!-- Kolom baru -->
+                                <th>Total Harga</th>
+                                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
                                 <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +87,8 @@
                                             <span class="badge bg-grd-danger">UNPAID</span>
                                         @endif
                                     </td>
-                                    <td>Rp {{ number_format($total, 0, ',', '.') }}</td> <!-- Total Harga -->
+                                    <td>Rp {{ number_format($total, 0, ',', '.') }}</td>
+                                    @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
                                     <td>
                                         <button class="btn btn-info btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#viewModal{{ $transaksi->id }}">View</button>
@@ -97,8 +102,9 @@
                                                 onclick="return confirm('Are you sure you want to delete this transaction?')">Delete</button>
                                         </form>
                                     </td>
+                                    @endif
                                 </tr>
-                                
+
                                 <!-- Modal Edit Transaksi -->
                                 <div class="modal fade" id="editModal{{ $transaksi->id }}" tabindex="-1"
                                     aria-labelledby="editModalLabel" aria-hidden="true">

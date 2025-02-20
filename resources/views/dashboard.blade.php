@@ -59,9 +59,9 @@
                                 @php
                                     $avatar = asset('../assets/images/avatars/default.jpg');
                                     if ($member->jenis_kelamin === 'L') {
-                                        $avatar = asset('../assets/images/avatars/cowo.webp');
+                                        $avatar = asset('../assets/images/avatars/1.jpg');
                                     } elseif ($member->jenis_kelamin === 'P') {
-                                        $avatar = asset('../assets/images/avatars/cewe.webp');
+                                        $avatar = asset('../assets/images/avatars/2.jpg');
                                     }
                                 @endphp
                                 <div class="d-flex align-items-center gap-3">

@@ -38,7 +38,9 @@
                                     <th>Outlet</th>
                                     <th>Package Name</th>
                                     <th>Price</th>
+                                    @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
                                     <th>Action</th>
+                                @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,6 +50,7 @@
                                         <td>{{ $paket->outlet->nama }}</td>
                                         <td>{{ $paket->nama_paket }}</td>
                                         <td>Rp {{ number_format($paket->harga, 0, ',', '.') }}</td>
+                                        @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
                                         <td>
                                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                                 data-bs-target="#editModal"
@@ -60,6 +63,7 @@
                                                     onclick="return confirm('Apakah Anda yakin?')">Delete</button>
                                             </form>
                                         </td>
+                                @endif
                                     </tr>
                                 @endforeach
                             </tbody>

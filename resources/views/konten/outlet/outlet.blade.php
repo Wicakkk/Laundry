@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $title = "Manage Outlet";
+    $title = 'Manage Outlet';
 @endphp
 
 @section('content')
@@ -12,13 +12,15 @@
             <div class="col-auto flex-grow-1 overflow-auto">
                 <div class="btn-group position-static"></div>
             </div>
-            <div class="col-auto">
-                <div class="d-flex align-items-center gap-2 justify-content-lg-end">
-                    <a href="{{ route('outlet.create') }}" class="btn btn-primary px-4">
-                        <i class="bi bi-plus-lg me-2"></i>Add Outlet
-                    </a>
+            @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-2 justify-content-lg-end">
+                        <a href="{{ route('outlet.create') }}" class="btn btn-primary px-4">
+                            <i class="bi bi-plus-lg me-2"></i>Add Outlet
+                        </a>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         @if (session('success'))
@@ -36,7 +38,9 @@
                                     <th>Name</th>
                                     <th>Address</th>
                                     <th>Phone Number</th>
-                                    <th>Action</th>
+                                    @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
+                                        <th>Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,18 +50,20 @@
                                         <td>{{ $outlet->nama }}</td>
                                         <td>{{ $outlet->alamat }}</td>
                                         <td>{{ $outlet->tlp }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                                data-bs-target="#editModal"
-                                                onclick="editOutlet({{ $outlet->id }})">Edit</button>
-                                            <form action="{{ route('outlet.destroy', $outlet->id) }}" method="POST"
-                                                style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger"
-                                                    onclick="return confirm('Apakah Anda yakin?')">Delet</button>
-                                            </form>
-                                        </td>
+                                        @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
+                                            <td>
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                    data-bs-target="#editModal"
+                                                    onclick="editOutlet({{ $outlet->id }})">Edit</button>
+                                                <form action="{{ route('outlet.destroy', $outlet->id) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"
+                                                        onclick="return confirm('Apakah Anda yakin?')">Delet</button>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $title = "Manage Customer";
+    $title = 'Manage Customer';
 @endphp
 
 @section('content')
@@ -12,13 +12,15 @@
             <div class="col-auto flex-grow-1 overflow-auto">
                 <div class="btn-group position-static"></div>
             </div>
-            <div class="col-auto">
-                <div class="d-flex align-items-center gap-2 justify-content-lg-end">
-                    <a href="{{ route('member.create') }}" class="btn btn-primary px-4">
-                        <i class="bi bi-plus-lg me-2"></i>Add Customer
-                    </a>
+            @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-2 justify-content-lg-end">
+                        <a href="{{ route('member.create') }}" class="btn btn-primary px-4">
+                            <i class="bi bi-plus-lg me-2"></i>Add Customer
+                        </a>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         @if (session('success'))
@@ -37,7 +39,9 @@
                                     <th>Address</th>
                                     <th>Gender</th>
                                     <th>Phone Number</th>
-                                    <th>Action</th>
+                                    @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
+                                        <th>Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,19 +52,21 @@
                                         <td>{{ $member->alamat }}</td>
                                         <td>{{ $member->jenis_kelamin == 'L' ? 'Male' : 'Female' }}</td>
                                         <td>{{ $member->tlp }}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#editModal{{ $member->id }}">Edit</button>
-                                            <form action="{{ route('member.destroy', $member->id) }}" method="POST"
-                                                style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Are you sure you want to delete?')">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if (auth()->user()->role === 'admin' || auth()->user()->role === 'kasir')
+                                            <td>
+                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#editModal{{ $member->id }}">Edit</button>
+                                                <form action="{{ route('member.destroy', $member->id) }}" method="POST"
+                                                    style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Are you sure you want to delete?')">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
 
                                     <!-- Modal Edit -->
@@ -69,45 +75,58 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header border-bottom-0 py-2 bg-grd-info">
-                                                    <h5 class="modal-title" id="editModalLabel{{ $member->id }}">Edit Customer</h5>
-                                                    <a href="javascript:;" class="primary-menu-close" data-bs-dismiss="modal">
+                                                    <h5 class="modal-title" id="editModalLabel{{ $member->id }}">Edit
+                                                        Customer</h5>
+                                                    <a href="javascript:;" class="primary-menu-close"
+                                                        data-bs-dismiss="modal">
                                                         <i class="material-icons-outlined">close</i>
                                                     </a>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form action="{{ route('member.update', $member->id) }}" method="POST">
+                                                    <form action="{{ route('member.update', $member->id) }}"
+                                                        method="POST">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="mb-3">
-                                                            <label for="editNama{{ $member->id }}" class="form-label">Customer Name</label>
-                                                            <input type="text" class="form-control" id="editNama{{ $member->id }}"
-                                                                name="nama" value="{{ $member->nama }}" required>
+                                                            <label for="editNama{{ $member->id }}"
+                                                                class="form-label">Customer Name</label>
+                                                            <input type="text" class="form-control"
+                                                                id="editNama{{ $member->id }}" name="nama"
+                                                                value="{{ $member->nama }}" required>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label for="editAlamat{{ $member->id }}" class="form-label">Address</label>
-                                                            <textarea class="form-control" id="editAlamat{{ $member->id }}"
-                                                                name="alamat" required>{{ $member->alamat }}</textarea>
+                                                            <label for="editAlamat{{ $member->id }}"
+                                                                class="form-label">Address</label>
+                                                            <textarea class="form-control" id="editAlamat{{ $member->id }}" name="alamat" required>{{ $member->alamat }}</textarea>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label for="editJenisKelamin{{ $member->id }}" class="form-label">Gender</label>
-                                                            <select class="form-control" id="editJenisKelamin{{ $member->id }}"
+                                                            <label for="editJenisKelamin{{ $member->id }}"
+                                                                class="form-label">Gender</label>
+                                                            <select class="form-control"
+                                                                id="editJenisKelamin{{ $member->id }}"
                                                                 name="jenis_kelamin" required>
-                                                                <option value="L" {{ $member->jenis_kelamin == 'L' ? 'selected' : '' }}>
+                                                                <option value="L"
+                                                                    {{ $member->jenis_kelamin == 'L' ? 'selected' : '' }}>
                                                                     Male
                                                                 </option>
-                                                                <option value="P" {{ $member->jenis_kelamin == 'P' ? 'selected' : '' }}>
+                                                                <option value="P"
+                                                                    {{ $member->jenis_kelamin == 'P' ? 'selected' : '' }}>
                                                                     Female
                                                                 </option>
                                                             </select>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label for="editTlp{{ $member->id }}" class="form-label">Phone Number</label>
-                                                            <input type="text" class="form-control" id="editTlp{{ $member->id }}"
-                                                                name="tlp" value="{{ $member->tlp }}" required>
+                                                            <label for="editTlp{{ $member->id }}"
+                                                                class="form-label">Phone Number</label>
+                                                            <input type="text" class="form-control"
+                                                                id="editTlp{{ $member->id }}" name="tlp"
+                                                                value="{{ $member->tlp }}" required>
                                                         </div>
                                                         <div class="d-md-flex d-grid align-items-center gap-3">
-                                                            <button type="submit" class="btn btn-grd-danger px-4">Save</button>
-                                                            <button type="button" class="btn btn-grd-info px-4" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit"
+                                                                class="btn btn-grd-danger px-4">Save</button>
+                                                            <button type="button" class="btn btn-grd-info px-4"
+                                                                data-bs-dismiss="modal">Cancel</button>
                                                         </div>
                                                     </form>
                                                 </div>
